@@ -48,19 +48,67 @@
       return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${cfg.title} - INVO</title><style>${documentStyles()}</style></head><body><main class="print-wrap"><section class="document-preview ${cfg.className}">${preview.innerHTML}</section></main></body></html>`;
     }
 
+    function pdfEscape(value) {
+      return String(value ?? "").replace(/[\\()]/g, "\\$&").replace(/\r?\n/g, " ");
+    }
+
+    function makePdf(lines) {
+      const safeLines = lines.map(pdfEscape);
+      const content = [
+        "BT",
+        "/F1 22 Tf",
+        "50 780 Td",
+        `(${cfg.title}) Tj`,
+        "/F1 11 Tf",
+        ...safeLines.flatMap((line, index) => [`0 ${index === 0 ? -34 : -18} Td`, `(${line}) Tj`]),
+        "ET"
+      ].join("\n");
+      const objects = [
+        "<< /Type /Catalog /Pages 2 0 R >>",
+        "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+        "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>",
+        "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+        `<< /Length ${content.length} >>\nstream\n${content}\nendstream`
+      ];
+      let pdf = "%PDF-1.4\n";
+      const offsets = [0];
+      objects.forEach((obj, index) => {
+        offsets.push(pdf.length);
+        pdf += `${index + 1} 0 obj\n${obj}\nendobj\n`;
+      });
+      const xref = pdf.length;
+      pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+      offsets.slice(1).forEach((offset) => { pdf += `${String(offset).padStart(10, "0")} 00000 n \n`; });
+      pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`;
+      return new Blob([pdf], { type: "application/pdf" });
+    }
+
     function exportPdf() {
       render();
-      const win = window.open("", "_blank", "noopener,noreferrer");
-      if (!win) {
-        INVO.toast("Allow popups to export or use Print to save as PDF.");
-        return;
-      }
-      win.document.open();
-      win.document.write(getDocumentHtml());
-      win.document.close();
-      win.focus();
-      setTimeout(() => win.print(), 350);
-      INVO.toast("PDF export opened. Choose Save as PDF in the print dialog.");
+      const data = INVO.serializeForm(form);
+      const rows = readRows();
+      const currency = data.currency || "USD";
+      const total = rows.reduce((sum, row) => sum + row.total, 0);
+      const lines = [
+        `${data.company || "Your Company"} | ${data.email || ""} ${data.phone || ""}`,
+        `${cfg.title} Number: ${data.docNumber || cfg.number}`,
+        `Client: ${data.client || "Client Name"} ${data.clientEmail || ""}`,
+        `Issue Date: ${data.issueDate || ""} | ${kind === "quote" ? "Valid Until" : "Due Date"}: ${data.dueDate || ""}`,
+        "Items:",
+        ...rows.map((row) => `${row.description || "Service"} - Qty ${row.quantity} - ${INVO.money(row.total, currency)}`),
+        `Total: ${INVO.money(total, currency)}`,
+        `Notes: ${data.notes || ""}`,
+        `${kind === "receipt" ? "Payment" : "Payment Instructions"}: ${data.paymentMethod || data.bank || "Bank details provided on request."}`
+      ];
+      const blob = makePdf(lines);
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${cfg.title.toLowerCase()}-${(data.docNumber || cfg.number).replace(/[^a-z0-9-]/gi, "-")}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+      INVO.toast(`${cfg.title} PDF downloaded`);
     }
 
     function openFullScreenPreview() {

@@ -43,7 +43,7 @@
         <div class="footer-col"><h3>Business Tools</h3><a href="invoice-generator.html">Invoice Generator</a><a href="quote-generator.html">Quote Generator</a><a href="receipt-generator.html">Receipt Generator</a><a href="business-calculators.html">Calculators</a></div>
         <div class="footer-col"><h3>Resources</h3><a href="invoice-templates.html">Templates</a><a href="business-guides.html">Guides</a><a href="blog.html">Blog</a><a href="faq.html">FAQ</a></div>
         <div class="footer-col"><h3>Company</h3><a href="about.html">About</a><a href="contact.html">Contact</a><a href="index.html#testimonials">Customers</a><a href="index.html#features">Features</a></div>
-        <div class="footer-col"><h3>Legal</h3><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a><a href="../sitemap.xml">Sitemap</a><a href="../robots.txt">Robots</a></div>
+        <div class="footer-col"><h3>Legal</h3><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div>
       </div>
       <div class="container footer-bottom"><span>Copyright 2026 INVO. All rights reserved.</span><span>LinkedIn - X - YouTube</span></div>
     `;

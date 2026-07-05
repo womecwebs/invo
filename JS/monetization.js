@@ -7,18 +7,29 @@
     skyscraper: { key: "4f04b858e0b72b77b48b3835cb223b9e", width: 160, height: 300 }
   };
 
-  function adSrcdoc(slot) {
-    return `<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:transparent;overflow:hidden}</style></head><body><script>atOptions={key:'${slot.key}',format:'iframe',height:${slot.height},width:${slot.width},params:{}};<\/script><script src="https://www.highperformanceformat.com/${slot.key}/invoke.js"><\/script></body></html>`;
-  }
-
   function createAd(type, label = "Advertisement") {
     const slot = slots[type];
     if (!slot) return null;
     const wrap = document.createElement("aside");
     wrap.className = "ad-slot";
     wrap.setAttribute("aria-label", label);
-    wrap.innerHTML = `<div class="ad-shell"><iframe class="ad-frame" title="${label}" loading="lazy" width="${slot.width}" height="${slot.height}" referrerpolicy="no-referrer-when-downgrade"></iframe></div>`;
-    wrap.querySelector("iframe").srcdoc = adSrcdoc(slot);
+    wrap.innerHTML = `<div class="ad-shell" style="width:${slot.width}px;min-height:${slot.height}px" data-ad-shell><span class="ad-label">Advertisement</span><div data-ad-host></div></div>`;
+    const host = wrap.querySelector("[data-ad-host]");
+    const options = document.createElement("script");
+    options.text = `atOptions={key:'${slot.key}',format:'iframe',height:${slot.height},width:${slot.width},params:{}};`;
+    const invoke = document.createElement("script");
+    invoke.src = `https://www.highperformanceformat.com/${slot.key}/invoke.js`;
+    invoke.async = false;
+    invoke.onerror = () => {
+      host.innerHTML = `<a class="ad-fallback" href="${affiliateUrl}" target="_blank" rel="sponsored noopener">Create a professional business website with AI</a>`;
+    };
+    host.append(options, invoke);
+    setTimeout(() => {
+      const hasFrame = host.querySelector("iframe, ins, object");
+      if (!hasFrame && host.textContent.trim() === "") {
+        host.innerHTML = `<a class="ad-fallback" href="${affiliateUrl}" target="_blank" rel="sponsored noopener">Create a professional business website with AI</a>`;
+      }
+    }, 3500);
     return wrap;
   }
 
@@ -32,9 +43,11 @@
 
     const appShell = main.querySelector(".app-shell");
     const section = main.querySelector(".section:last-of-type");
-    const secondary = createAd(appShell ? "rectangle" : "banner", "Advertisement");
-    if (appShell && secondary) appShell.insertAdjacentElement("afterend", secondary);
-    else if (section && secondary) section.insertAdjacentElement("afterend", secondary);
+    setTimeout(() => {
+      const secondary = createAd(appShell ? "rectangle" : "banner", "Advertisement");
+      if (appShell && secondary) appShell.insertAdjacentElement("afterend", secondary);
+      else if (section && secondary) section.insertAdjacentElement("afterend", secondary);
+    }, 900);
   }
 
   function showAffiliate() {
@@ -49,7 +62,7 @@
       <div class="affiliate-card">
         <div class="affiliate-head">
           <div><span class="eyebrow">Business growth partner</span><h2>Need a website for your business too?</h2></div>
-          <button class="icon-btn" type="button" data-affiliate-close aria-label="Close recommendation">×</button>
+          <button class="icon-btn" type="button" data-affiliate-close aria-label="Close recommendation">x</button>
         </div>
         <p>Invoices help you get paid. A polished website helps clients trust you before they ever ask for a quote. Readdy AI can help business owners generate professional website ideas and pages faster with AI-assisted design and content.</p>
         <ul class="affiliate-list">

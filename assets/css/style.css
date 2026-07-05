@@ -341,6 +341,28 @@ p { margin: 0 0 16px; color: var(--muted); }
   background: var(--card);
   padding: 8px;
   box-shadow: 0 8px 24px rgba(15, 23, 42, .04);
+  display: grid;
+  place-items: center;
+  max-width: 100%;
+}
+.ad-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: .72rem;
+  text-align: center;
+}
+.ad-fallback {
+  min-height: 60px;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  border-radius: 7px;
+  padding: 12px;
+  background: rgba(37, 99, 235, .08);
+  color: var(--primary);
+  font-weight: 850;
 }
 .affiliate-modal {
   position: fixed;

@@ -13,6 +13,9 @@ Canonical site: https://invoe.netlify.app
 - Receipt Generator: https://invoe.netlify.app/receipt-generator
 - Business Calculators: https://invoe.netlify.app/business-calculators
 - Invoice Templates: https://invoe.netlify.app/invoice-templates
+- How to Create a Professional Invoice: https://invoe.netlify.app/blog-create-professional-invoice
+- Net 7 vs Net 15 vs Net 30 Payment Terms: https://invoe.netlify.app/blog-payment-terms
+- Invoice Best Practices Guide: https://invoe.netlify.app/guide-invoice-best-practices
 
 ## What INVO Helps Users Do
 
