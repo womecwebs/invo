@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Free Invoice Generator | INVO</title>
+  <meta name="description" content="Create a professional invoice with live totals, taxes, discounts, payment terms, local draft saving and print-ready output.">
+  <link rel="canonical" href="https://invo.example/invoice-generator"><meta name="robots" content="index,follow">
+  <meta property="og:title" content="Free Invoice Generator by INVO"><meta property="og:description" content="Build a professional invoice in less than one minute."><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../assets/css/style.css"><link rel="stylesheet" href="../assets/css/utilities.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"How to create an invoice","step":[{"@type":"HowToStep","name":"Enter business details"},{"@type":"HowToStep","name":"Add products and services"},{"@type":"HowToStep","name":"Print or export the invoice"}]}</script>
+</head>
+<body><a class="skip-link" href="#main">Skip to content</a><header class="site-header" data-header></header>
+<main id="main">
+  <section class="section-sm"><div class="container"><span class="eyebrow">Invoice generator</span><h1>Create a professional invoice in minutes.</h1><p class="lead">Add business details, client information, taxes, discounts, terms and payment instructions while the A4 invoice preview updates instantly.</p></div></section>
+  <section class="container app-shell">
+    <form class="builder-panel" data-document-form>
+      <div class="form-section"><h2>Business Information</h2><div class="form-grid">
+        <div class="field"><label>Company Name<input name="company" required></label></div><div class="field"><label>Business Logo Upload<input name="logo" type="file" accept="image/*"></label></div>
+        <div class="field span-2"><label>Business Address<textarea name="address"></textarea></label></div><div class="field"><label>Email<input name="email" type="email"></label></div><div class="field"><label>Phone<input name="phone"></label></div>
+        <div class="field"><label>Website<input name="website"></label></div><div class="field"><label>Tax Number<input name="taxNumber"></label></div><div class="field span-2"><label>Bank Details<textarea name="bank"></textarea></label></div>
+      </div></div>
+      <div class="form-section"><h2>Client and Invoice Details</h2><div class="form-grid">
+        <div class="field"><label>Client Name<input name="client" required></label></div><div class="field"><label>Client Email<input name="clientEmail" type="email"></label></div>
+        <div class="field"><label>Invoice Number<input name="docNumber"></label></div><div class="field"><label>Reference Number<input name="reference"></label></div>
+        <div class="field"><label>Issue Date<input name="issueDate" type="date"></label></div><div class="field"><label>Due Date<input name="dueDate" type="date"></label></div>
+        <div class="field"><label>Currency<select name="currency"><option>USD</option><option>EUR</option><option>GBP</option><option>CAD</option><option>AUD</option><option>INR</option><option>TZS</option></select></label></div>
+        <div class="field"><label>Status<select name="status"><option>Unpaid</option><option>Paid</option><option>Overdue</option><option>Draft</option></select></label></div>
+      </div></div>
+      <div class="form-section"><h2>Invoice Items</h2><div class="table-wrap"><table class="items-table"><thead><tr><th>Description</th><th>Quantity</th><th>Unit Price</th><th>Discount %</th><th>Tax %</th><th>Total</th><th></th></tr></thead><tbody data-items-body></tbody></table></div><div class="form-actions"><button class="btn btn-soft" type="button" data-add-row>Add Row</button><button class="btn" type="button" data-duplicate-row>Duplicate Row</button></div></div>
+      <div class="form-section"><h2>Notes and Terms</h2><div class="form-grid"><div class="field"><label>Notes<textarea name="notes"></textarea></label></div><div class="field"><label>Terms & Conditions<textarea name="terms"></textarea></label></div><div class="field span-2"><label>Payment Instructions<textarea name="paymentMethod"></textarea></label></div></div></div>
+    </form>
+    <aside class="document-sticky"><div class="document-actions form-actions"><button class="btn btn-primary" data-pdf type="button">Download PDF</button><button class="btn" data-print type="button">Print</button><button class="btn" data-save-draft type="button">Save Draft</button><button class="btn" data-reset-draft type="button">Reset</button><button class="btn" data-copy type="button">Copy Link</button></div><div class="document-preview" data-document-preview></div></aside>
+  </section>
+</main><footer class="site-footer" data-footer></footer><a class="btn back-to-top" href="#main">Top</a>
+<script src="../JS/utils.js"></script><script src="../JS/theme.js"></script><script src="../JS/app.js"></script><script src="../JS/search.js"></script><script src="../JS/invoice.js"></script><script>document.addEventListener("DOMContentLoaded",()=>INVO.initDocumentBuilder("invoice"));</script>
+</body></html>
