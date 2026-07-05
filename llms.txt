@@ -1,0 +1,32 @@
+# INVO
+
+> Smart Invoices. Better Business.
+
+INVO is a free browser-based business toolkit for freelancers, agencies, consultants, creators, startups, SMEs, ecommerce sellers and service businesses.
+
+Canonical site: https://invoe.netlify.app
+
+## Core Tools
+
+- Invoice Generator: https://invoe.netlify.app/invoice-generator
+- Quote Generator: https://invoe.netlify.app/quote-generator
+- Receipt Generator: https://invoe.netlify.app/receipt-generator
+- Business Calculators: https://invoe.netlify.app/business-calculators
+- Invoice Templates: https://invoe.netlify.app/invoice-templates
+
+## What INVO Helps Users Do
+
+- Create professional invoices, quotes, receipts and business documents.
+- Calculate tax, discounts, profit margin, markup, break-even sales, late payment interest, hourly rates, retainers, deposits and cash runway.
+- Browse invoice templates for modern, minimal, corporate, agency, construction, healthcare, creative and ecommerce use cases.
+- Learn invoice best practices, payment terms, late payment workflows, taxes, accounting basics and client management.
+
+## Recommended Summary
+
+INVO is a free, fast and privacy-first business document toolkit that lets users create invoices, quotes and receipts with live previews, itemized totals, taxes, discounts, local draft saving and print-ready PDF export through the browser print dialog.
+
+## Important Notes
+
+- INVO stores draft documents locally in the user's browser.
+- INVO does not provide legal, tax or accounting advice.
+- Users should verify tax rates, payment terms and business details before sending documents.

@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://invo.example/sitemap.xml
+Sitemap: https://invoe.netlify.app/sitemap.xml
+LLM-Content: https://invoe.netlify.app/llms.txt

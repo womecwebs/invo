@@ -1,8 +1,8 @@
 (function () {
   const config = {
-    invoice: { store: "invo-invoice-draft", title: "Invoice", number: "INV-2026-001", due: 14, status: true },
-    quote: { store: "invo-quote-draft", title: "Quote", number: "QUO-2026-001", due: 30, status: false },
-    receipt: { store: "invo-receipt-draft", title: "Receipt", number: "REC-2026-001", due: 0, status: false }
+    invoice: { store: "invo-invoice-draft", title: "Invoice", number: "INV-2026-001", due: 14, status: true, className: "invoice-doc", accent: "#2563EB" },
+    quote: { store: "invo-quote-draft", title: "Quote", number: "QUO-2026-001", due: 30, status: false, className: "quote-doc", accent: "#0EA5E9" },
+    receipt: { store: "invo-receipt-draft", title: "Receipt", number: "REC-2026-001", due: 0, status: false, className: "receipt-doc", accent: "#22C55E" }
   };
 
   function initBuilder(kind = "invoice") {
@@ -11,6 +11,7 @@
     const preview = INVO.$("[data-document-preview]");
     if (!form || !body || !preview) return;
     const cfg = config[kind];
+    preview.classList.add(cfg.className);
 
     const draft = INVO.storage.get(cfg.store, {});
     form.elements.company.value = draft.company || "Northstar Studio";
@@ -34,6 +35,48 @@
     const rows = draft.rows?.length ? draft.rows : [{ description: "Brand identity design", quantity: 1, price: 1200, discount: 0, tax: 8 }, { description: "Website landing page", quantity: 1, price: 1800, discount: 10, tax: 8 }];
     rows.forEach(addRow);
     render();
+
+    function documentStyles() {
+      return `
+        body{margin:0;background:#f8fafc;font-family:Inter,Arial,sans-serif;color:#111827}
+        .print-wrap{max-width:850px;margin:24px auto;padding:16px}
+        .document-preview{background:#fff;border-top:7px solid ${cfg.accent};padding:38px;min-height:1050px;box-shadow:0 18px 45px rgba(15,23,42,.08)}
+        .doc-top,.doc-meta,.totals-row,.doc-footer{display:flex;justify-content:space-between;gap:18px}.doc-title{font-size:2rem;font-weight:900}.preview-logo{width:48px;height:48px;border-radius:8px;background:${cfg.accent};color:#fff;display:grid;place-items:center;font-weight:900}.doc-muted{color:#64748b}.doc-table{width:100%;border-collapse:collapse;margin:28px 0}.doc-table th{background:#f1f5f9;color:#334155;text-align:left}.doc-table th,.doc-table td{padding:11px;border-bottom:1px solid #e2e8f0}.totals{margin-left:auto;width:min(100%,330px)}.totals-row{padding:8px 0;border-bottom:1px solid #e2e8f0}.totals-row.grand{font-size:1.25rem;font-weight:900}@media print{body{background:#fff}.print-wrap{margin:0;padding:0;max-width:none}.document-preview{box-shadow:none;min-height:auto}}`;
+    }
+
+    function getDocumentHtml() {
+      return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${cfg.title} - INVO</title><style>${documentStyles()}</style></head><body><main class="print-wrap"><section class="document-preview ${cfg.className}">${preview.innerHTML}</section></main></body></html>`;
+    }
+
+    function exportPdf() {
+      render();
+      const win = window.open("", "_blank", "noopener,noreferrer");
+      if (!win) {
+        INVO.toast("Allow popups to export or use Print to save as PDF.");
+        return;
+      }
+      win.document.open();
+      win.document.write(getDocumentHtml());
+      win.document.close();
+      win.focus();
+      setTimeout(() => win.print(), 350);
+      INVO.toast("PDF export opened. Choose Save as PDF in the print dialog.");
+    }
+
+    function openFullScreenPreview() {
+      render();
+      let modal = INVO.$("[data-document-modal]");
+      if (!modal) {
+        modal = document.createElement("div");
+        modal.className = "document-modal";
+        modal.dataset.documentModal = "";
+        modal.innerHTML = `<div class="document-modal-inner"><div class="document-modal-bar"><strong>Full-screen ${cfg.title} Preview</strong><button class="btn" type="button" data-close-document>Close</button></div><div class="document-preview ${cfg.className}" data-document-modal-preview></div></div>`;
+        document.body.appendChild(modal);
+      }
+      INVO.$("[data-document-modal-preview]", modal).innerHTML = preview.innerHTML;
+      modal.classList.add("is-open");
+      modal.querySelector("[data-close-document]")?.focus();
+    }
 
     function addRow(row = {}) {
       const tr = document.createElement("tr");
@@ -72,7 +115,7 @@
       const safe = INVO.escape;
       preview.innerHTML = `
         <div class="doc-top">
-          <div><div class="preview-logo">${safe((data.company || "I").slice(0, 1))}</div><h2 class="doc-title">${safe(data.company || "Your Company")}</h2><p class="doc-muted">${safe(data.address || "")}<br>${safe(data.email || "")} ${safe(data.phone || "")}<br>${safe(data.website || "")}</p></div>
+          <div><div class="preview-logo" style="background:${cfg.accent}">${safe((data.company || "I").slice(0, 1))}</div><h2 class="doc-title">${safe(data.company || "Your Company")}</h2><p class="doc-muted">${safe(data.address || "")}<br>${safe(data.email || "")} ${safe(data.phone || "")}<br>${safe(data.website || "")}</p></div>
           <div><div class="doc-title">${safe(cfg.title)}</div><p class="doc-muted"># ${safe(data.docNumber || cfg.number)}<br>${data.status ? `Status: ${safe(data.status)}<br>` : ""}Tax ID: ${safe(data.taxNumber || "Not provided")}</p></div>
         </div>
         <div class="doc-meta"><p><strong>Bill to</strong><br>${safe(data.client || "Client Name")}<br><span class="doc-muted">${safe(data.clientEmail || "")}</span></p><p><strong>Issue date</strong><br>${safe(data.issueDate || "")}<br><strong>${kind === "quote" ? "Valid until" : "Due date"}</strong><br>${safe(data.dueDate || "")}</p></div>
@@ -94,7 +137,9 @@
       if (event.target.closest("[data-save-draft]")) { render(); INVO.toast("Draft saved locally"); }
       if (event.target.closest("[data-reset-draft]")) { INVO.storage.remove(cfg.store); location.reload(); }
       if (event.target.closest("[data-print]")) window.print();
-      if (event.target.closest("[data-pdf]")) INVO.toast("PDF export hook ready for backend integration");
+      if (event.target.closest("[data-pdf]")) exportPdf();
+      if (event.target.closest("[data-view-document]")) openFullScreenPreview();
+      if (event.target.closest("[data-close-document]")) event.target.closest("[data-document-modal]")?.classList.remove("is-open");
     });
   }
 
