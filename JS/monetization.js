@@ -13,23 +13,26 @@
     const wrap = document.createElement("aside");
     wrap.className = "ad-slot";
     wrap.setAttribute("aria-label", label);
-    wrap.innerHTML = `<div class="ad-shell" style="width:${slot.width}px;min-height:${slot.height}px" data-ad-shell><span class="ad-label">Advertisement</span><div data-ad-host></div></div>`;
+    wrap.innerHTML = `<div class="ad-shell" style="width:${slot.width}px;min-height:${slot.height + 30}px" data-ad-shell><span class="ad-label">Advertisement</span><div data-ad-host style="min-height:${slot.height}px"></div></div>`;
     const host = wrap.querySelector("[data-ad-host]");
+    const fallbackHtml = `<a class="ad-fallback" href="${affiliateUrl}" target="_blank" rel="sponsored noopener" style="min-height:${slot.height}px">Create a professional business website with AI</a>`;
+    const ensureContent = () => {
+      const hasRenderableAd = host.querySelector("iframe, ins, object, embed");
+      const hasFallback = host.querySelector(".ad-fallback");
+      if (!hasRenderableAd && !hasFallback) host.insertAdjacentHTML("beforeend", fallbackHtml);
+    };
+
+    host.innerHTML = fallbackHtml;
     const options = document.createElement("script");
     options.text = `atOptions={key:'${slot.key}',format:'iframe',height:${slot.height},width:${slot.width},params:{}};`;
     const invoke = document.createElement("script");
     invoke.src = `https://www.highperformanceformat.com/${slot.key}/invoke.js`;
     invoke.async = false;
-    invoke.onerror = () => {
-      host.innerHTML = `<a class="ad-fallback" href="${affiliateUrl}" target="_blank" rel="sponsored noopener">Create a professional business website with AI</a>`;
-    };
+    invoke.onerror = ensureContent;
     host.append(options, invoke);
-    setTimeout(() => {
-      const hasFrame = host.querySelector("iframe, ins, object");
-      if (!hasFrame && host.textContent.trim() === "") {
-        host.innerHTML = `<a class="ad-fallback" href="${affiliateUrl}" target="_blank" rel="sponsored noopener">Create a professional business website with AI</a>`;
-      }
-    }, 3500);
+    const observer = new MutationObserver(() => requestAnimationFrame(ensureContent));
+    observer.observe(host, { childList: true, subtree: true });
+    [3500, 7000, 12000, 20000, 30000].forEach((delay) => setTimeout(ensureContent, delay));
     return wrap;
   }
 

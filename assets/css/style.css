@@ -327,7 +327,8 @@ p { margin: 0 0 16px; color: var(--muted); }
   align-items: center;
   margin: 22px auto;
   max-width: 100%;
-  overflow: hidden;
+  overflow: visible;
+  min-height: 92px;
 }
 .ad-frame {
   border: 0;
@@ -344,6 +345,16 @@ p { margin: 0 0 16px; color: var(--muted); }
   display: grid;
   place-items: center;
   max-width: 100%;
+  min-width: min(100%, 300px);
+}
+.ad-shell [data-ad-host] {
+  width: 100%;
+  display: grid;
+  place-items: center;
+}
+.ad-shell iframe {
+  max-width: 100%;
+  border: 0;
 }
 .ad-label {
   display: block;
